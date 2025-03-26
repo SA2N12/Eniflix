@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{parent()}}
+{% endblock %}
+
+{% block body %}
+	<div class="container" style="max-width: 800px;">
+		<ul class="nav nav-pills mb-3">
+			<li class="nav-item">
+				<a class="nav-link {% if not status %}active{% endif %}" href="{{ path('series') }}">
+					All
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link {% if status == 'returning' %}active{% endif %}" href="{{ path('series', {'status': 'returning'}) }}">
+					Returning
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link {% if status == 'canceled' %}active{% endif %}" href="{{ path('series', {'status': 'canceled'}) }}">
+					Canceled
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link {% if status == 'ended' %}active{% endif %}" href="{{ path('series', {'status': 'ended'}) }}">
+					Ended
+				</a>
+			</li>
+		</ul>
+
+		<nav aria-label="Page navigation">
+			<ul
+				class="pagination mt-3">
+				{# Page précédente #}
+				{% if currentPage > 1 %}
+					<li class="page-item">
+						<a class="page-link" href="{{ path('series', { page: currentPage - 1, status: status }) }}">
+							Précédent
+						</a>
+					</li>
+				{% endif %}
+
+				{# Liens vers chaque page #}
+				{% for pageNum in 1..totalPages %}
+					<li class="page-item {% if pageNum == currentPage %}active{% endif %}">
+						<a class="page-link" href="{{ path('series', { page: pageNum, status: status }) }}">
+							{{ pageNum }}
+						</a>
+					</li>
+				{% endfor %}
+
+				{# Page suivante #}
+				{% if currentPage < totalPages %}
+					<li class="page-item">
+						<a class="page-link" href="{{ path('series', { page: currentPage + 1, status: status }) }}">
+							Suivant
+						</a>
+					</li>
+				{% endif %}
+			</ul>
+		</nav>
+
+		<div class="row row-cols-1 row-cols-md-4 g-4">
+			{% for serie in series %}
+				<div class="col">
+					<div class="card">
+						<img src="{{ asset('uploads/posters/series/' ~ serie.poster) }}" class="card-img-top" alt="{{ serie.name }}" style="width: 100%; height: auto; object-fit: contain;">
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+
+{% endblock %}
